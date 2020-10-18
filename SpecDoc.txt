@@ -1,0 +1,48 @@
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                                               SPEC DOC
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+|-----------------------------|
+|     Requirement Analysis    |
+|-----------------------------|
+
+ Teams in professional/non-professional environments need to delegate tasks to achieve their collective goals.
+ In a work from home system, collaboration can be a real struggle with a constant need for calls for communication and delegation of tasks.
+ Applications exist (like ms teams) that can do a multitude of things (including task delegation to an extent) but they are clumsy.
+ Therefore, a light and clean application to just handle task management can be very helpful.
+ 
+|-----------------------------|
+|  Functional Specifications  |
+|-----------------------------|
+
+ 1. Userbase and authentication
+ 2. Creating teams and sub teams
+ 3. Assigning members to teams
+ 4. Assigning team leaders to these teams
+ 5. Team leaders can then create and assign tasks to members withing their team
+ 
+ This will all be done with a GUI. 
+ 
+|-----------------------------------|
+| External Interface Specifications |
+|-----------------------------------|
+
+ 1. Completely GUI based. Those who insist on a command line interface, need not use the app.
+ 2. No data will be on the user's system. Everything on a remote server.
+ 2. Use mongo db as a data base.
+ 
+|-----------------------------|
+|   Technical Specifications  |
+|-----------------------------|
+
+ 1. Web browser needed to run the application. 
+     i.   Must support twitter bootstrap 3
+     ii.  Must support jquery 2 or higher
+     iii. Must support javascript (es6 at least)
+     
+      
+ 
+ 
+
+
