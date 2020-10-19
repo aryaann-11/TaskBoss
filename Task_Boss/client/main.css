@@ -1,0 +1,10 @@
+body {
+  padding: 10px;
+  font-family: sans-serif;
+}
+.taskTitle{
+  font-size: 20px;
+}
+.date{
+  color:rgba(1, 1, 1, 0.5);
+}

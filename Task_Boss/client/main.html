@@ -1,0 +1,79 @@
+<head>
+  <title>Task_Boss</title>
+</head>
+
+<body>
+  {{#if currentUser}}
+  <header>
+    <nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Task Boss</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="#">View Tasks</a></li>
+      <li><a href="#">View Teams</a></li>
+      <li><a href="/createTeam.html">Create New Team</a></li>
+      <li><a href="#">Manage my teams</a></li>
+      <li style="float:right;"><a href="#">{{>loginButtons}}</a></li>
+    </ul>
+  </div>
+</nav>
+  </header>
+  <div class="container tasks" style="display:visible;">
+    <div class="col-md-12">
+      <h3>Tasks assigned to me</h3>
+      {{> tasks}}
+    </div>
+  </div>
+  {{else}}
+  <nav class="navbar navbar-inverse">
+<div class="container-fluid">
+  <div class="navbar-header">
+    <a class="navbar-brand" href="#">Task Boss</a>
+  </div>
+  <ul class="nav navbar-nav">
+    <li style="float:right;"><a href="#">{{>loginButtons}}</a></li>
+  </ul>
+</div>
+</nav>
+<h1>Sign in to use task boss !</h1>
+
+{{/if}}
+
+</body>
+
+
+
+<template name="tasks">
+  <ul class="list-group">
+    {{#each tasks}}
+    <li class="list-group-item" id="{{_id}}">
+      <button class="btn btn-dark" style="margin-right:5px;" data-toggle="collapse" data-target="#demo_{{_id}}">View</button>
+      <span class="taskTitle">{{title}}</span>
+      <div class="small date" style="float:right;margin-right:10px;">Due by: {{deadline}}</div>
+      <div id="demo_{{_id}}" class="collapse">
+         {{>task_details}}
+      </div>
+    </li>
+    {{/each}}
+  </ul>
+</template>
+
+<template name="teams">
+  <nav class="navbar ">
+ <div class="container-fluid">
+ <h3>My teams</h3>
+ <ul class="nav navbar-nav">
+   {{#each team}}
+  <li><a href="#">{{name}}</a></li>
+  {{/each}}
+ </ul>
+ </div>
+ </nav>
+</template>
+
+<template name="task_details">
+  Random details<br>
+  Random details
+</template>
