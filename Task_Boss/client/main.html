@@ -11,47 +11,43 @@
       <a class="navbar-brand" href="#">Task Boss</a>
     </div>
     <ul class="nav navbar-nav">
-      <li class="active"><a href="#">View Tasks</a></li>
-      <li><a href="#">View Teams</a></li>
-      <li><a href="/createTeam.html">Create New Team</a></li>
-      <li><a href="#">Manage my teams</a></li>
+      <li class="show-tasks"><a href="#">My Tasks</a></li>
+      <li class="show-teams"><a href="#">Teams</a></li>
       <li style="float:right;"><a href="#">{{>loginButtons}}</a></li>
     </ul>
   </div>
 </nav>
   </header>
-  <div class="container tasks" style="display:visible;">
-    <div class="col-md-12">
-      <h3>Tasks assigned to me</h3>
-      {{> tasks}}
-    </div>
-  </div>
-  {{else}}
-  <nav class="navbar navbar-inverse">
-<div class="container-fluid">
-  <div class="navbar-header">
-    <a class="navbar-brand" href="#">Task Boss</a>
-  </div>
-  <ul class="nav navbar-nav">
-    <li style="float:right;"><a href="#">{{>loginButtons}}</a></li>
-  </ul>
-</div>
-</nav>
-<h1>Sign in to use task boss !</h1>
-
+   <div class="pseudoPage tasks_pseudoPage" style="display:block;">
+     {{>tasks_pseudoPage}}
+   </div>
+   <div class="pseudoPage teams_pseudoPage" style="display:none;">
+     {{>teams_pseudoPage}}
+   </div>
+   {{else}}
+   <header>
+     <nav class="navbar navbar-inverse">
+   <div class="container-fluid">
+     <div class="navbar-header">
+       <a class="navbar-brand" href="#">Task Boss</a>
+     </div>
+     <ul class="nav navbar-nav">
+       <li style="float:right;"><a href="#">{{>loginButtons}}</a></li>
+     </ul>
+   </div>
+ </nav>
+   </header>
 {{/if}}
-
 </body>
 
 
-
-<template name="tasks">
+<template name="incomplete_tasks">
   <ul class="list-group">
     {{#each tasks}}
     <li class="list-group-item" id="{{_id}}">
       <button class="btn btn-dark" style="margin-right:5px;" data-toggle="collapse" data-target="#demo_{{_id}}">View</button>
       <span class="taskTitle">{{title}}</span>
-      <div class="small date" style="float:right;margin-right:10px;">Due by: {{deadline}}</div>
+      <button class="btn btn-success completed" type="button" style="float:right;" name="button">completed</button>
       <div id="demo_{{_id}}" class="collapse">
          {{>task_details}}
       </div>
@@ -60,20 +56,155 @@
   </ul>
 </template>
 
-<template name="teams">
-  <nav class="navbar ">
- <div class="container-fluid">
- <h3>My teams</h3>
- <ul class="nav navbar-nav">
-   {{#each team}}
-  <li><a href="#">{{name}}</a></li>
-  {{/each}}
- </ul>
- </div>
- </nav>
+<template name="complete_tasks">
+  <ul class="list-group">
+    {{#each tasks}}
+    <li class="list-group-item" id="{{_id}}">
+      <button class="btn btn-dark" style="margin-right:5px;" data-toggle="collapse" data-target="#demo_{{_id}}">View</button>
+      <span class="taskTitle">{{title}}</span>
+      <button type="button" name="button" class="btn btn-danger js-del-task" style="float:right;">x</button>
+      <div id="demo_{{_id}}" class="collapse">
+         {{>task_details}}
+      </div>
+    </li>
+    {{/each}}
+  </ul>
 </template>
 
 <template name="task_details">
   Random details<br>
   Random details
+</template>
+
+<template name="create_task_form">
+  <form class="">
+    <div class="form-group">
+    <label for="title">Task title:</label>
+    <input type="text" class="form-control" id="title">
+  </div>
+  <button type="submit" class="btn btn-default" >Submit</button>
+  </form>
+</template>
+
+<template name="tasks_pseudoPage">
+  <div class="container">
+    <nav class="navbar">
+  <div class="container-fluid">
+    <ul class="nav navbar-nav">
+      <li id="show-incomplete"><a href="#">incomplete</a></li>
+      <li id="show-complete"><a href="#">complete</a></li>
+    </ul>
+  </div>
+</nav>
+  </div>
+  <div class="container">
+    <div class="col-md-12">
+      <div class="tasks incomplete_tasks" style="display:block;">
+        {{> incomplete_tasks}}
+      </div>
+      <div class="tasks complete_tasks" style="display:none;">
+        {{>complete_tasks}}
+      </div>
+    </div>
+  </div>
+</template>
+
+<template name="teams_pseudoPage">
+  <div class="container">
+    <nav class="navbar">
+  <div class="container-fluid">
+    <ul class="nav navbar-nav">
+      <li class="js-create-team" data-toggle="modal" data-target="#create_team"><a href="#">Create team</a></li>
+      <li class="js-join-team" data-toggle="modal" data-target="#join_team"><a href="#">Join Team</a></li>
+    </ul>
+  </div>
+</nav>
+  </div>
+{{>create_team_modal}}
+{{>join_team_modal}}
+<div class="container">
+  <h3>Teams you are a member of:</h3>
+</div>
+
+     {{>teams}}
+
+</template>
+
+<template name="teams">
+  <div class="container">
+    <ul class="list-group">
+      {{#each team}}
+      <li class="list-group-item">{{name}}
+      <span style="float:right">{{_id}}</span></li>
+      {{/each}}
+    </ul>
+
+  </div>
+</template>
+
+<template name="create_team_modal">
+  <!-- Modal -->
+<div id="create_team" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Enter Team Details</h4>
+      </div>
+      <div class="modal-body">
+
+          <form class="create_team_form">
+            <div class="form-group">
+    <label for="team_name">Team name:</label>
+    <input type="text" class="form-control" id="team_name">
+  </div>
+  <div class="form-group">
+    <label for="team_purpose">Purpose of your team:</label>
+    <input type="text" class="form-control" id="team_purpose">
+  </div>refreshing template.helpers on sign in
+  <div class="form-group">
+    <label for="team_objectives">Team Objectives:</label>
+    <textarea id="team_objectives" rows="8" cols="60" form="create_team_form"></textarea>
+  </div>
+  <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+</template>
+<template name="join_team_modal">
+  <!-- Modal -->
+<div id="join_team" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Join A Team</h4>
+      </div>
+      <div class="modal-body">
+        <form class="join_team_form">
+          <div class="form-group">
+            <label for="team_id">Enter the team id:</label>
+            <input type="text" class="form-control" id="team_id">
+          </div>
+          <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
 </template>
