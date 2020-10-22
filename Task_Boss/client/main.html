@@ -11,7 +11,7 @@
       <a class="navbar-brand" href="#">Task Boss</a>
     </div>
     <ul class="nav navbar-nav">
-      <li class="show-tasks"><a href="#">My Tasks</a></li>
+      <li class="show-tasks"><a href="#">Tasks</a></li>
       <li class="show-teams"><a href="#">Teams</a></li>
       <li class="show-delegate"><a href="#">Delegate</a></li>
       <li style="float:right;"><a href="#">{{>loginButtons}}</a></li>
@@ -53,6 +53,11 @@
       <span class="taskTitle">{{title}}</span>
       <button class="btn btn-success completed" type="button" style="float:right;" name="button">completed</button>
       <div id="demo_{{_id}}" class="collapse">
+        <ul>
+          {{#each assignedToUsers}}
+          <li>{{this}}</li>
+          {{/each}}
+        </ul>
          {{description}}
       </div>
     </li>
@@ -259,10 +264,14 @@
       <li id={{_id}} class="list-group-item">
       <button class="btn btn-dark" style="margin-right:5px;" data-toggle="collapse" data-target="#members_{{_id}}" type="button" name="button">members</button>
       <span>{{name}}</span>
+      <button class="btn btn-danger del-team" style="margin-left:5px;float:right;" type="button" name="button">del</button>
       </li>
       <div id="members_{{_id}}" class="collapse">
         <div class="container">
           <ul>
+            <p style="margin-right:20px;">Assign task to:</p>
+            <input type="checkbox" id=view_access_{{_id}} name="view_access" class="view_access">
+            <label for="view_access_{{_id}}">Provide view access to team</label><br>
             {{#each members}}
             <li><input type="checkbox" id="{{this}}" name="member" class="assign_to">
             <label for="{{this}}">{{this}}</label><br></li>

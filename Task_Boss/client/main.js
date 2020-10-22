@@ -11,8 +11,14 @@ Accounts.ui.config({
 
 import './main.html';
 //console.log(document.getElementById("hide_completed").value)
-Template.incomplete_tasks.helpers({tasks:Tasks.find({status:0,assigned_to:Meteor.userId()})});
-Template.complete_tasks.helpers({tasks:Tasks.find({status:1,assigned_to:Meteor.userId()})});
+Template.body.onCreated(function bodyOnCreated() {
+    this.state = new ReactiveDict();
+    Meteor.subscribe('tasks');
+    Meteor.subscribe('teams');
+    Meteor.subscribe('userData');
+  });
+Template.incomplete_tasks.helpers({tasks:Tasks.find({status:0})});
+Template.complete_tasks.helpers({tasks:Tasks.find({status:1})});
 Template.teams.helpers({team:Teams.find({memberIds:Meteor.userId()})});
 Template.teams_under_me.helpers({teams:Teams.find({leader:Meteor.userId()})});
 //console.log(Meteor.userId());
@@ -20,13 +26,11 @@ Template.teams_under_me.helpers({teams:Teams.find({leader:Meteor.userId()})});
 Template.tasks_pseudoPage.events({
   'click #show-complete':function(event){
       status=1;
-      console.log(status);
       $(".tasks").css("display","none");
       $(".complete_tasks").css("display","block");
   },
   'click #show-incomplete':function(event){
     status=0;
-    console.log(status);
     $(".tasks").css("display","none");
     $(".incomplete_tasks").css("display","block");
   },
@@ -35,47 +39,36 @@ Template.body.events({
   'click .show-tasks':function(event){
     $(".pseudoPage").css("display","none");
     $(".tasks_pseudoPage").css("display","block");
-    console.log("show tasks");
   },
   'click .show-teams':function(event){
     $(".pseudoPage").css("display","none");
     $(".teams_pseudoPage").css("display","block");
-    console.log("show teams");
   },
   'click .show-delegate':function(event){
     $(".pseudoPage").css("display","none");
     $(".delegate_pseudoPage").css("display","block");
-    console.log("show delegate");
   }
 });
 
 Template.incomplete_tasks.events({
   'click .completed':function(event){
-    Tasks.update(this._id, {
-      $set: { status: 1 }
-    });
+    var taskId=this._id;
+    Meteor.call('incomplete_tasks.setComplete',taskId);
   }
 });
 Template.complete_tasks.events({
   'click .js-del-task':function(event){
     var taskId=this._id;
-    console.log(taskId);
-    $("#"+taskId).hide("slow",function(){
-      Tasks.remove(taskId);
-    })
+    Meteor.call('complete_tasks.delete',taskId);
   },
 });
 Template.create_team_modal.events({
   'submit form':function(event){
     event.preventDefault();
-    console.log(Meteor.user().username);
     var name=event.currentTarget.team_name.value;
     var purpose=event.currentTarget.team_purpose.value;
     var objectives=document.getElementById("team_objectives").value;
-    console.log(name);
-    console.log(purpose);
-    console.log(objectives);
-    Teams.insert({name:name,purpose:purpose,objectives:objectives,leader:Meteor.userId(),members:[Meteor.user().username],memberIds:[Meteor.userId()]});
+    Meteor.call('create_team_modal.insertTeam',name,purpose,objectives);
   }
 });
 Template.join_team_modal.events({
@@ -90,28 +83,23 @@ Template.join_team_modal.events({
     if(!(members.find(alreadyMember))){
       members.push(Meteor.user().username);
       memberIds.push(Meteor.userId());
-      Teams.update(team_id,{$set:{members:members,memberIds:memberIds}});
-      console.log(members);
+      Meteor.call('join_team_modal.joinTeam',team_id,members,memberIds)
     }
     else{
-      console.log("already a member");
+      alert("already a member");
     }
   },
 });
 Template.teams.events({
   'click .exit-team':function(event){
-    console.log(this._id);
     var team_id=this._id;
     var members;var memberIds;
     var flag1,flag2=0;
     Teams.find({_id:team_id}).forEach(function(document) {members=document.members;memberIds=document.memberIds});
-    console.log(members);
-    console.log(memberIds);
     var i=0;
     var j=0;
     for(; i<members.length&&j<memberIds.length;i++,j++){
       if(members[i]===Meteor.user().username){
-        console.log("found");
         flag1=1;
         members.splice(i,1);
       }
@@ -124,7 +112,7 @@ Template.teams.events({
       }
     }
     $("#"+team_id).hide("slow",function(){
-      Teams.update(team_id,{$set:{members:members,memberIds:memberIds}});
+      Meteor.call('teams.exitTeam',team_id,members,memberIds);
     });
 
   }
@@ -136,18 +124,30 @@ Template.delegate_pseudoPage.events({
     var description=event.currentTarget.description.value;
     var assign_to=[];
     var prolly=document.getElementsByClassName("assign_to");
-    //console.log(prolly);
+    var assignedToUsers=[];
     for(var i=0;i<prolly.length;i++){
       if(prolly[i].checked==true){
-        //assign_to.push(prolly[i].id);
-        //console.log(prolly[i].id);
         var neededUsername=prolly[i].id;
         var userId=Meteor.users.findOne({username:neededUsername})._id;
         assign_to.push(userId);
-        console.log(userId);
+        assignedToUsers.push(neededUsername);
       }
     }
-    console.log(assign_to);
-    Tasks.insert({title:title,description:description,assigned_to:assign_to,status:0});
+    var prollyAccess=document.getElementsByClassName("view_access");
+    var viewAccess=assign_to;
+    viewAccess.push(Meteor.userId());
+    for(var i=0;i<prollyAccess.length;i++){
+      if(prollyAccess[i].checked==true){
+        var teamId=prollyAccess[i].id.substring(prollyAccess[i].id.lastIndexOf("_")+1,prollyAccess[i].id.length);
+        var accessToTeam=Teams.find({_id:teamId}).forEach(function(document){viewAccess=document.memberIds});
+      }
+    }
+    Meteor.call('delegate_pseudoPage.createTask',title,description,assign_to,viewAccess,assignedToUsers);
   }
+});
+Template.teams_under_me.events({
+  'click .del-team':function(event){
+    var teamId=this._id;
+    'teams_under_me.delete'(teamId);
+  },
 });
