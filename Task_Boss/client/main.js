@@ -8,7 +8,22 @@ import { Meteor } from 'meteor/meteor';
 Accounts.ui.config({
   passwordSignupFields:'USERNAME_AND_EMAIL'
 });
-
+/*
+Router.configure({
+  layoutTemplate:'ApplicationLayout'
+});*/
+Router.route('/',function(){
+  this.render('loggedInNavbar');
+});
+Router.route('/tasks_pseudoPage',function(){
+  this.render('tasks_pseudoPage');
+});
+Router.route('/teams_pseudoPage',function(){
+  this.render('teams_pseudoPage');
+});
+Router.route('/delegate_pseudoPage',function(){
+  this.render('delegate_pseudoPage');
+});
 import './main.html';
 //console.log(document.getElementById("hide_completed").value)
 Template.body.onCreated(function bodyOnCreated() {
@@ -35,6 +50,7 @@ Template.tasks_pseudoPage.events({
     $(".incomplete_tasks").css("display","block");
   },
 });
+/*
 Template.body.events({
   'click .show-tasks':function(event){
     $(".pseudoPage").css("display","none");
@@ -48,23 +64,56 @@ Template.body.events({
     $(".pseudoPage").css("display","none");
     $(".delegate_pseudoPage").css("display","block");
   }
-});
+});*/
 
 Template.incomplete_tasks.events({
   'click .completed':function(event){
+    /*
+    var ages = [3, 10, 18, 20];
+
+function checkAdult(age) {
+  return age >= 18;
+}
+
+function myFunction() {
+  document.getElementById("demo").innerHTML = ages.find(checkAdult);
+}
+    */
+    var assigned_to;
+    var assignedBy;
+    var found;
     var taskId=this._id;
-    Meteor.call('incomplete_tasks.setComplete',taskId);
+    Tasks.find({_id:taskId}).forEach(function(document){assigned_to=document.assigned_to,
+    assignedBy=document.assignedBy});
+    function checkPresent(userId){
+      return userId==Meteor.userId();
+    }
+    found=assigned_to.find(checkPresent);
+    if(found==false && assignedBy!=Meteor.user().username){
+      alert("Not authorized to mark task as completed");
+    }
+    else{
+      Meteor.call('incomplete_tasks.setComplete',taskId);
+    }
   }
 });
 Template.complete_tasks.events({
   'click .js-del-task':function(event){
     var taskId=this._id;
-    Meteor.call('complete_tasks.delete',taskId);
+    //var userId;
+    var username;
+    Tasks.find({_id:taskId}).forEach(function(document){username=document.assignedBy});
+    if(username!=Meteor.user().username){
+      alert("Not authorized to delete this task");
+    }
+    else{
+      Meteor.call('complete_tasks.delete',taskId);
+    }
   },
 });
 Template.create_team_modal.events({
   'submit form':function(event){
-    event.preventDefault();
+    //event.preventDefault();
     var name=event.currentTarget.team_name.value;
     var purpose=event.currentTarget.team_purpose.value;
     var objectives=document.getElementById("team_objectives").value;
@@ -73,7 +122,7 @@ Template.create_team_modal.events({
 });
 Template.join_team_modal.events({
   'submit form':function(event){
-    event.preventDefault();
+    //event.preventDefault();
     var team_id=event.target.team_id.value;
     var members;var memberIds;
     Teams.find({_id:team_id}).forEach(function(document) {members=document.members;memberIds=document.memberIds});
@@ -119,7 +168,7 @@ Template.teams.events({
 });
 Template.delegate_pseudoPage.events({
   'submit form':function(event){
-    event.preventDefault();
+    //event.preventDefault();
     var title=event.currentTarget.title.value;
     var description=event.currentTarget.description.value;
     var assign_to=[];

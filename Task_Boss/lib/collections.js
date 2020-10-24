@@ -14,7 +14,7 @@ if(Meteor.isServer){
     return Teams.find({});
   }),
   Meteor.publish('userData',function userPublication(){
-    return Meteor.users.findOne(this.userId);
+    return Meteor.users.find({});
   })
 }
 
@@ -26,14 +26,11 @@ Meteor.methods({
     });
   },
   'complete_tasks.delete'(taskId){
-    if(Meteor.users.findOne(this.userId).username==assignedBy){
-      $("#"+taskId).hide("slow",function(){
+
+
         Tasks.remove(taskId);
-      });
-    }
-    else{
-      throw new Meteor.Error('not-authorized');
-    }
+      
+
   },
   'create_team_modal.insertTeam'(name,purpose,objectives){
     if(!this.userId){
