@@ -17,7 +17,7 @@
 |-----------------------------|
 
  1. Userbase and authentication
- 2. Creating teams and sub teams
+ 2. Creating teams
  3. Assigning members to teams
  4. Assigning team leaders to these teams
  5. Team leaders can then create and assign tasks to members withing their team
