@@ -1,0 +1,43 @@
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                                           COMMON SCENARIOS
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+the common scenarios have been described in a way that the common errors are also obvious through them. 
+
+----------------------
+| Tasks Interactions |
+----------------------
+
+1. create task: allowed for all 
+
+2. assign task: task can only be assigned to someone in a team being led by you
+
+3. view task: if you have secret view access or if you have team view access  
+
+4. change status: if the task has been assigned to you
+
+5. delete task: if task has been assigned to you
+
+6. update title, description: not allowed
+
+----------------------
+| Teams Interactions |
+----------------------
+
+1. change name,description,objectives: only if you are the leader
+
+2. remove member: only if you are the leader
+
+3. create team: for all
+
+4. exit team: for all. But, if you are a team leader, you must assign another leader
+
+5. change leader: for current leader
+
+----------------------
+| users Interactions |
+----------------------
+
+1. view fields: for all
+
+2. change fields: if its your profile

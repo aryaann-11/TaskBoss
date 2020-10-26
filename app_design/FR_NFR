@@ -1,0 +1,73 @@
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                              FUNCTIONAL AND NON-FUNCTIONAL REQUIREMENTS
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-----------------------------
+|  FUNCTIONAL REQUIREMENTS  |
+-----------------------------
+0. user base, authentication and authorization
+
+1. Create and join teams
+
+2. Assign and view tasks based on priority and how long ago it was assigned
+
+3. changing the status of the task
+
+4. deleting the task
+
+5. view team members,leader
+
+6. view other team fields 
+
+7. exit team
+
+8. remove member from team
+
+9. updating own profile
+
+10.viewing someone else's profile
+
+---------------------------------
+|  NON FUNCTIONAL REQUIREMENTS  |
+---------------------------------
+
+1. NAME:   usability
+   SCALE:  how easy/difficult is it to work with the tool and how short is the learning curve
+   METER:  no. of visits to the help section of the app
+   TARGET: 0 visits
+
+2. NAME:   safety/security
+   SCALE:  how secure is the user's data
+   METER:  amount of data available to client and no. of authorization checks
+   TARGET: minimum required data given to client, authorization check for every interaction with database
+   
+3. NAME:   responsiveness
+   SCALE:  site should be easy to use on mobile,tablet or laptop
+   METER:  number of responsiveness checks during development
+   TARGET: responsiveness check for every single window
+   
+4. NAME:   dependibility
+   SCALE:  site must always be on and not crash
+   METER:  no. of times app must be serviced or changed. How much does it depend on external interfaces  
+   TARGET: 0 services/changes 0 external interfaces
+   
+5. NAME:   failure transparency
+   SCALE:  if a certain function fails to execute, does the user know why that happened?
+   METER:  no. of error messages and progress logs
+   TARGET: progress logs for initiation and completion of each function. Error message for each failed task especially 
+           those related to authorization problems   
+
+6. NAME:   modularity
+   SCALE:  has my code been structured and divided well
+   METER:  instances of repeated code
+   TARGET: 0 instances   
+   
+      
+   
+    
+
+
+
+
+
+

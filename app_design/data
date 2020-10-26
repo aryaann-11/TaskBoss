@@ -1,0 +1,38 @@
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                                          DATA/COLLECTIONS
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+The entire app is essentially based around tasks and teams, with users and messages providing the necessary scaffolding.
+
+1. Tasks
+
+i.   title
+ii.  decription
+iii. priority: red , green or blue
+iv.  assigned by
+v.   assigned to
+vi.  status: complete,incomplete
+vii. view access: secret, team access
+
+2. Teams
+
+i.   name
+ii.  decription
+iii. current objectives
+iv.  leader
+v.   members
+
+3. Messages
+
+i.   message
+ii.  sent by
+iii. sent to
+
+4.Users
+
+i.   name
+ii.  username
+iii. email
+iv.  profile pic
+v.   position in company
+vi.  job decription
