@@ -1,0 +1,13 @@
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                                             THIRD PARTY PACKAGES
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1. iron:router                              : for routing
+2. twbs:bootstrap                           : making it all look good
+3. accounts-password                        : password support for meteor accounts
+4. ian:accounts-ui-bootstrap3               : accounts creation ui 
+5. alanning:roles                           : for creating user roles
+6. themeteorchef:bert                       : alerts 
+7. aldeed:collection2                       : schema verification during insertion
+8. aldeed:simpl-schema                      : setting up and attaching schemas to collections 
+9. aldeed:autoform                          : automatic form generation for insert and update collections
+10.alethes:pages                            : pagination support
