@@ -1,0 +1,11 @@
+body {
+  padding: 10px;
+  font-family: sans-serif;
+  background-color: rgba(5,5,5,0.1);
+}
+.user-forms{
+  border-radius:20px;
+}
+.form-show-buttons{
+  padding-top:10px;
+}

@@ -1,0 +1,122 @@
+<body>
+</body>
+
+<!--template layout -->
+<template name="layout">
+  {{> yield}}
+</template>
+
+<!--template logged_in_navbar -->
+<template name="logged_in_navbar">
+  <nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">TaskBoss</a>
+      </div>
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="/">Home</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li id="js-logout">
+          <a href=""><span style="margin-right:5px;" class="glyphicon glyphicon-log-out"></span>logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</template>
+
+<!--template logged_out_navbar -->
+<template name="logged_out_navbar">
+  <nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">TaskBoss</a>
+      </div>
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="/">Home</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="/login"><span style="margin-right:5px;" class="glyphicon glyphicon-log-in"></span>login</a></li>
+        <li><a href="/register"><span style="margin-right:5px;" class="glyphicon glyphicon-user"></span>register</a></li>
+      </ul>
+    </div>
+  </nav>
+
+</template>
+
+<!--template home page -->
+<template name="home">
+  {{#if currentUser}}
+  {{>logged_in_navbar}}
+  <h1>You are logged in</h1>
+  {{else}}
+  {{>logged_out_navbar}}
+  {{>loginRegister}}
+  {{/if}}
+</template>
+<!--template login page and register -->
+<template name="loginRegister">
+  <div class="row text-center">
+    <h1>Welcome to Task Boss</h1>
+    <h2>login or register to contiue</h2>
+  </div>
+</template>
+<!--template register-->
+<template name="register">
+  {{>logged_out_navbar}}
+  <div class="container col-md-4 col-md-offset-4" >
+    <div class="container title">
+      <h2>Register:</h2>
+    </div>
+  <form>
+  <div class="form-group">
+    <label for="name">Name:</label>
+    <input class="form-control" type="text" name="name" id="name">
+  </div>
+  <div class="form-group">
+    <label for="username">Username:</label>
+    <input class="form-control" type="text" name="username" id="username">
+  </div>
+  <div class="form-group">
+    <label for="email">Email:</label>
+    <input class="form-control" type="email" name="email" id="email">
+  </div>
+  <div class="form-group">
+    <label for="password">Password:</label>
+    <input class="form-control" id="password" type="password" name="password">
+  </div>
+  <div class="form-group">
+    <label for="c_password">Password:</label>
+    <input class="form-control" id="c_password" type="password" name="c_password">
+  </div>
+  <div class="form-group">
+    <button type="submit" class="btn btn-success">submit</button>
+  </div>
+</form>
+  </div>
+</template>
+<!-- template login-->
+<template name="login">
+  {{>logged_out_navbar}}
+  <div class="container col-md-4 col-md-offset-4">
+    <div class="container title"><h2>Login:</h2></div>
+  <form>
+  <div class="form-group">
+    <label for="l_username">Username or email:</label>
+    <input class="form-control" type="text" name="l_username" id="l_username">
+  </div>
+  <div class="form-group">
+    <label for="l_password">Password:</label>
+    <input class="form-control" id="l_password" type="password" name="l_password">
+  </div>
+  <div class="form-group">
+    <button type="submit" class="btn btn-success">submit</button>
+  </div>
+</form>
+
+  </div>
+
+</template>
+<!--template dashboard-->
+<template name="dashboard"></template>
+

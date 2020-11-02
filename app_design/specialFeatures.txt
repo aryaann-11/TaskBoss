@@ -1,0 +1,14 @@
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                                                SPECIAL FEATURES
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+1. Staging area for tasks: stage once, assign whenever. Useful for just quickly saving a task and assigning later or assigning
+                           the same task multiple times.
+
+2. Safe and tamper modes: Alert messages before deletion and updating collections can be irritating but in 
+                          some cases they can also stop you from making a mistake. The way to eat your cake 
+                          and have it is to operate in 2 modes. In safe or view mode, you only
+                          view the data and do not tamper with it in any way. But when you switch over to 
+                          tamper mode, you just get one message while entering
+                          tamper mode and that is it. Once in tamper mode you can make changes 
+                          without irritating alert messages at every corner, enabling fast tampering.
