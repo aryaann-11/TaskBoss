@@ -21,8 +21,7 @@ Router.route('/teams',{
 });
 //subscriptions
 //helpers
-//console.log(Teams.find().count());
-Template.teams.helpers({teams:Teams.find({})});
+Template.teams.helpers({teams:Teams.find({members:Meteor.userId()})});
 //register.events
 Template.register.events({
   'submit form':function(event){
@@ -91,25 +90,23 @@ Template.login.events({
 
 //logged_in_navbar.events
 Template.logged_in_navbar.events({
-  'click #js_logout':function(){
-    Router.go('/');
+  'click #js-logout':function(){
     Meteor.logout();
+    Router.go('/');
   },
 });
 Template.create_team_modal.events({
   'submit form':function(event){
-    event.preventDefault();
     var name=event.target.team_name.value;
     var purpose=event.target.team_purpose.value;
     var objectives=event.target.team_objectives.value;
     var leader=Meteor.userId();
     var members=[];
     members.push(Meteor.userId());
-    Teams.insert({
-      name:name,
-      description:purpose,
-      objectives:objectives,
-      leader:leader,
-      members:members});
+    console.log(name);
+    console.log(purpose);
+    console.log(objectives);
+    //Teams.insert({name:name,description:purpose,objectives:objectives,leader:leader,
+      //             members:members});
   }
 });

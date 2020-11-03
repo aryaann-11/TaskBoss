@@ -9,3 +9,10 @@ body {
 .form-show-buttons{
   padding-top:10px;
 }
+.btn-dark{
+  background-color:rgba(5,5,5,0.8);
+  color:white;
+}
+.btn-dark:hover{
+  color:white;
+}
