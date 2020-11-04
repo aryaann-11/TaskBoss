@@ -87,7 +87,7 @@
     <input class="form-control" id="password" type="password" name="password">
   </div>
   <div class="form-group">
-    <label for="c_password">Password:</label>
+    <label for="c_password">Confirm Password:</label>
     <input class="form-control" id="c_password" type="password" name="c_password">
   </div>
   <div class="form-group">
@@ -132,16 +132,45 @@
     </div>
     {{>create_team_modal}}
     {{>join_team_modal}}
+    
+
+    <div id="main">
     <div class="row" style="margin-top:30px;">
+  
       <div class="container teams_list">
         <h2>Teams:</h2>
         <ul class="list-group">
           {{#each teams}}
-          <li class="list-group-item">{{name}}<span style="float:right">{{_id}}</span></li>
+          <li  class="list-group-item">
+            <span style="js-show-team-details margin-right:30px;" 
+              class="glyphicon glyphicon-list" data-toggle="collapse" 
+             data-target="#team_details_{{_id}}"></span>
+            {{name}}
+            <span style="float:right;margin-left:20px;" class="js-exit-team glyphicon glyphicon-remove"></span>
+            <span style="float:right">{{_id}}</span>
+            <div id="team_details_{{_id}}" class="collapse">
+              <div class="row">
+                <div class="left" style="margin-left:20px;display:inline-block;float:left;">
+                  <h4>Decription: {{description}}</h4>
+                  <h5>Objectives: </h5>
+                  <textarea id="" name="" cols="30" rows="10" value="{{objectives}}"></textarea> 
+                </div>
+                <div class="right" style="margin-left:40px;display:inline-block;float:left">
+                  <ul>
+                    <h4>Members:</h4>
+                    {{#each members}}
+                    <li>{{this}}</li>
+                    {{/each}}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </li>
           {{/each}}
         </ul>
       </div>
     </div>
+  </div>
   </div>
 </template>
 <!--template create_team_modal -->

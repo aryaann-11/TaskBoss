@@ -60,6 +60,7 @@ Template.register.events({
         }
         else{
           Router.go('/');
+          //location.reload();
         }
       });
     }
@@ -83,6 +84,7 @@ Template.login.events({
       }
         else{
           Router.go('/');
+          //location.reload();
         }
     });
   },
@@ -92,6 +94,7 @@ Template.login.events({
 Template.logged_in_navbar.events({
   'click #js_logout':function(){
     //Router.go('/');
+    //location.reload();
     Meteor.logout();
   },
 });

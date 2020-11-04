@@ -16,3 +16,9 @@ body {
 .btn-dark:hover{
   color:white;
 }
+.list-group-item{
+  border:solid;
+  border-width:1px;
+  border-radius:30px;
+}
+
