@@ -112,3 +112,28 @@ Template.create_team_modal.events({
       members:members});
   }
 });
+Template.join_team_modal.events({
+  'submit form':function(event){
+    event.preventDefault();
+    var team_id=event.target.team_id.value;
+    var members;
+    Teams.find({_id:team_id}).forEach(function(document){members=document.members});
+    function alreadyMember(userId){
+      return userId==Meteor.userId();
+    }
+    if(!members.find(alreadyMember)){
+      members.push(Meteor.userId());
+      console.log("member pushed");
+      Teams.update({_id:team_id},{$set:{members:members}});
+    }
+    else{
+      Bert.alert({
+        title:'Joining error',
+        message:'You are already a member of that team',
+        type:"danger",
+        style:"growl-top-right"
+        
+      });
+    }
+  }
+});
