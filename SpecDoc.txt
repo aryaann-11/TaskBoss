@@ -42,7 +42,7 @@
      iii. Must support javascript (es6 at least)
      
       
- 
+ Please add more details of technology mapping of each logical component to be mentioned in sequence diagrams.
  
 
 
