@@ -6,23 +6,22 @@ import './main.html';
 Router.configure({
   layoutTemplate:'layout'
 });
-Router.route('/',{
-  template:'home',
-  name:'home'
+Router.route('/',function(){
+  this.render('home');
 });
-Router.route('/login',{
-  template:'login'
+Router.route('/login',function(){
+  this.render('login');
 });
-Router.route('/register',{
-  template:'register'
+Router.route('/register',function(){
+  this.render('register');
 });
-Router.route('/teams',{
-  template:'teams'
+Router.route('/teams',function(){
+  this.render('teams');
 });
 //subscriptions
 //helpers
 //console.log(Teams.find().count());
-Template.teams.helpers({teams:Teams.find({})});
+Template.teams.helpers({teams:Teams.find({members:Meteor.userId()})});
 //register.events
 Template.register.events({
   'submit form':function(event){
@@ -92,13 +91,13 @@ Template.login.events({
 //logged_in_navbar.events
 Template.logged_in_navbar.events({
   'click #js_logout':function(){
-    Router.go('/');
+    //Router.go('/');
     Meteor.logout();
   },
 });
 Template.create_team_modal.events({
   'submit form':function(event){
-    event.preventDefault();
+    //event.preventDefault();
     var name=event.target.team_name.value;
     var purpose=event.target.team_purpose.value;
     var objectives=event.target.team_objectives.value;
