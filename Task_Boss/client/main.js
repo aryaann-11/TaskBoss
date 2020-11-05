@@ -1,6 +1,7 @@
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 import {Teams} from '../lib/collections.js';
+import { Session } from 'meteor/session';
 import './main.html';
 //routes
 Router.configure({
@@ -21,6 +22,8 @@ Router.route('/teams',function(){
 //subscriptions
 //helpers
 //console.log(Teams.find().count());
+Session.setDefault('tamperMode',false);
+console.log(Session.get('tamperMode'));
 Template.teams.helpers({teams:Teams.find({members:Meteor.userId()})});
 //register.events
 Template.register.events({
@@ -97,6 +100,20 @@ Template.logged_in_navbar.events({
     //location.reload();
     Meteor.logout();
   },
+  'click .js-change-mode':function(event){
+    if(event.target.innerHTML=='tamper mode is off'){
+      event.target.innerHTML='tamper mode is on';
+      event.target.classList.remove('btn-success');
+      event.target.classList.add('btn-danger');
+    }
+    else if(event.target.innerHTML=='tamper mode is on'){
+      event.target.innerHTML="tamper mode is off";
+      event.target.classList.remove('btn-danger');
+      event.target.classList.add('btn-success');
+    }
+    Session.set('tamperMode',!Session.get('tamperMode'));
+    console.log(Session.get('tamperMode'));
+  }
 });
 Template.create_team_modal.events({
   'submit form':function(event){
@@ -136,6 +153,29 @@ Template.join_team_modal.events({
         type:"danger",
         style:"growl-top-right"
         
+      });
+    }
+  }
+});
+Template.teams.events({
+  'click .js-exit-team':function(event){
+    //console.log(this._id);
+    if(Session.get('tamperMode')){
+      var team_id=this._id;
+      var members;
+      var leader;
+      Teams.find({_id:team_id}).forEach(function(document){members=document.members;leader=document.leader});
+      members.pop(Meteor.userId());
+      $("#"+this._id).hide("slow",function(){
+          Teams.update({_id:team_id},{$set:{members:members}});
+      });
+    }
+    else{
+      Bert.alert({
+        title:'Cant exit team',
+        message:'tamper mode is turned off. Turn tamper mode on to be able to exit team',
+        type:'danger',
+        style:'growl-top-right'
       });
     }
   }

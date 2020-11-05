@@ -18,6 +18,9 @@
         <li><a href="/teams">Teams</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
+        <li class="js-change-mode">
+          <p class="navbar-btn"><a class="btn btn-success" href="#">tamper mode is off</a></p>
+        </li>
         <li id="js_logout">
           <a href="/"><span style="margin-right:5px;" class="glyphicon glyphicon-log-out"></span>logout</a>
         </li>
@@ -141,7 +144,7 @@
         <h2>Teams:</h2>
         <ul class="list-group">
           {{#each teams}}
-          <li  class="list-group-item">
+          <li  id="{{_id}}" class="list-group-item">
             <span style="js-show-team-details margin-right:30px;" 
               class="glyphicon glyphicon-list" data-toggle="collapse" 
              data-target="#team_details_{{_id}}"></span>
