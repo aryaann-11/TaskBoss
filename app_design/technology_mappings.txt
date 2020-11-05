@@ -1,0 +1,16 @@
+====================================================================TECHNOLOGY MAPPINGS============================================================================
+
+User interface:
+   . HTML5 
+   . CSS3
+   . Javascript
+   . Jquery
+   . Spacebars
+   . Blaze
+   . Twitter Bootstrap
+
+Database:
+   .MongoDB
+
+Business layer:
+   .Meteor.js
