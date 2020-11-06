@@ -203,4 +203,18 @@ Template.create_task.events({
     Tasks.insert({title:title,description:description,assigned:0,completed:0,assignedTo:[],assingedBy:Meteor.userId()});
   }
 });
-
+Template.tasks.events({
+  'click .js-del-task':function(){
+    if(Session.get('tamperMode')){
+      Tasks.remove({_id:this._id});
+    }
+    else{
+      Bert.alert({
+        tilte:"cannot delete task",
+        message:"turn on tamper mode to be able to delete task",
+        type:"danger",
+        style:"growl-top-right"
+      });
+    }
+  },
+});

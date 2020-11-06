@@ -266,10 +266,13 @@
 
 <template name="tasks">
   {{>logged_in_navbar}}
-  <div class="row">
+    <div class="row">
     <div class="container">
       <button class="btn btn-dark btn-lg"
         data-toggle="modal" data-target="#create_task">Create task</button>
+    </div>
+    <div class="container">
+      <h2>Tasks created by you:</h2>
     </div>
     {{>create_task}}
   </div>
@@ -281,10 +284,16 @@
           {{#each tasks}}
           {{#if assigned}}
           {{else}}
-          <li class="list-group-item">
-           <span class="glyphicon glyphicon-list js-show-task-details"></span>
+          <li id="{{_id}}" class="list-group-item">
+           <span class="glyphicon glyphicon-list js-show-task-details"
+                 data-toggle="collapse" data-target="#staged_task_details_{{_id}}">
+           </span>
             {{title}}
-            <span class="glyphicon glyphicon-remove js-del-task" style="float:right;margin-right:10px;"></span>
+            <span class="glyphicon glyphicon-remove js-del-task" style="float:right;margin-right:10px;color:red;"></span>
+            <span style="float:right;margin-right:10px;">{{_id}}</span>
+            <div id="staged_task_details_{{_id}}" class="collapse">
+              <textarea>{{description}}</textarea>
+            </div>
           </li>
           {{/if}}
           {{/each}}
