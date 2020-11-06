@@ -16,6 +16,8 @@
       <ul class="nav navbar-nav">
         <li><a href="/">Home</a></li>
         <li><a href="/teams">Teams</a></li>
+        <li><a href="/tasks">Tasks</a></li>
+        <li><a href="/profile">My Profile</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li class="js-change-mode">
@@ -74,8 +76,16 @@
     </div>
   <form>
   <div class="form-group">
-    <label for="name">Name:</label>
+    <label for="name">First Name:</label>
     <input class="form-control" type="text" name="name" id="name">
+  </div>
+  <div class="form-group">
+    <label for="last_name">Last name:</label>
+    <input class="form-control" type="text" name="last_name" id="last_name">
+  </div>
+  <div class="form-group">
+    <label for="job_title">Job title:</label>
+    <input class="form-control" type="text" name="job_title" id="job_title">
   </div>
   <div class="form-group">
     <label for="username">Username:</label>
@@ -241,6 +251,85 @@
       </div>
     </div>
 
+  </div>
+</div>
+</template>
+<template name="profile">
+  {{>logged_in_navbar}}
+  {{# with currentUser}}
+  {{#with profile}}
+  <h2>First Name: {{first_name}}</h2>
+  <h2>Second Name: {{last_name}}</h2>
+  {{/with}}
+  {{/with}}
+</template>
+
+<template name="tasks">
+  {{>logged_in_navbar}}
+  <div class="row">
+    <div class="container">
+      <button class="btn btn-dark btn-lg"
+        data-toggle="modal" data-target="#create_task">Create task</button>
+    </div>
+    {{>create_task}}
+  </div>
+  <div class="row">
+    <div class="container">
+      <div class="col-md-5 staged" >
+        <h3>Staged tasks:</h3>
+        <ul class="list-group">
+          {{#each tasks}}
+          {{#if assigned}}
+          {{else}}
+          <li class="list-group-item">
+           <span class="glyphicon glyphicon-list js-show-task-details"></span>
+            {{title}}
+            <span class="glyphicon glyphicon-remove js-del-task" style="float:right;margin-right:10px;"></span>
+          </li>
+          {{/if}}
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-5 col-md-offset-2 assigned">
+        <h3>Assigned tasks:</h3>
+        <ul class="list-group">
+          {{#each tasks}}
+          {{#if assigned}}
+          <li class="list-group-item">{{title}}</li>
+          {{/if}}
+          {{/each}}
+        </ul>
+      </div>
+    </div>
+  </div>
+  </template>
+<template name="create_task">
+<!-- Modal -->
+  <div id="create_task" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Create task:</h4>
+      </div>
+      <div class="modal-body">
+        <form class="create_task_form">
+          <div class="form-group">
+            <label for="task_title">Title:</label>
+            <input type="text" class="form-control" name="task_title" id="task_title">
+          </div>
+          <div class="form-group">
+            <label for="task_description">Description: </label>
+            <textarea class="form-control" type="text" name="task_description" id="task_description"></textarea>
+          </div>
+          <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
   </div>
 </div>
 </template>

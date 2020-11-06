@@ -1,7 +1,9 @@
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 import {Teams} from '../lib/collections.js';
+import {Tasks} from '../lib/collections.js';
 import { Session } from 'meteor/session';
+import { Email } from 'meteor/email';
 import './main.html';
 //routes
 Router.configure({
@@ -19,17 +21,28 @@ Router.route('/register',function(){
 Router.route('/teams',function(){
   this.render('teams');
 });
+Router.route('/profile',function(){
+  this.render('profile');
+});
+Router.route('/tasks',function(){
+  this.render('tasks');
+});
 //subscriptions
 //helpers
 //console.log(Teams.find().count());
 Session.setDefault('tamperMode',false);
 console.log(Session.get('tamperMode'));
 Template.teams.helpers({teams:Teams.find({members:Meteor.userId()})});
+Template.tasks.helpers({
+  tasks:Tasks.find({})
+});
 //register.events
 Template.register.events({
   'submit form':function(event){
     event.preventDefault();
     var name=event.target.name.value;
+    var last_name=event.target.last_name.value;
+    var jobtitle=event.target.job_title.value;
     var username=event.target.username.value;
     var email=event.target.email.value;
     var password=event.target.password.value;
@@ -48,8 +61,9 @@ Template.register.events({
         email:email,
         password:password,
         profile:{
-          name:name,
-          leading:[],
+          first_name:name,
+          last_name:last_name,
+          job_title:job_title,
           membership:[],
         }
       },function(error){
@@ -121,14 +135,12 @@ Template.create_team_modal.events({
     var name=event.target.team_name.value;
     var purpose=event.target.team_purpose.value;
     var objectives=event.target.team_objectives.value;
-    var leader=Meteor.userId();
     var members=[];
     members.push(Meteor.userId());
     Teams.insert({
       name:name,
       description:purpose,
       objectives:objectives,
-      leader:leader,
       members:members});
   }
 });
@@ -163,12 +175,15 @@ Template.teams.events({
     if(Session.get('tamperMode')){
       var team_id=this._id;
       var members;
-      var leader;
-      Teams.find({_id:team_id}).forEach(function(document){members=document.members;leader=document.leader});
+      Teams.find({_id:team_id}).forEach(
+        function(document){
+          members=document.members;
+        });
       members.pop(Meteor.userId());
       $("#"+this._id).hide("slow",function(){
           Teams.update({_id:team_id},{$set:{members:members}});
       });
+     
     }
     else{
       Bert.alert({
@@ -180,3 +195,12 @@ Template.teams.events({
     }
   }
 });
+Template.create_task.events({
+  'submit form':function(event){
+    event.preventDefault();
+    var title=event.target.task_title.value;
+    var description=event.target.task_description.value;
+    Tasks.insert({title:title,description:description,assigned:0,completed:0,assignedTo:[],assingedBy:Meteor.userId()});
+  }
+});
+
