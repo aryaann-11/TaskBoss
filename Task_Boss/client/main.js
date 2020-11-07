@@ -32,7 +32,9 @@ Router.route('/tasks',function(){
 //console.log(Teams.find().count());
 Session.setDefault('tamperMode',false);
 console.log(Session.get('tamperMode'));
-Template.teams.helpers({teams:Teams.find({members:Meteor.userId()})});
+Template.teams.helpers({
+  teams:Teams.find({members:Meteor.userId()}),
+  });
 Template.tasks.helpers({
   tasks:Tasks.find({})
 });
@@ -136,12 +138,16 @@ Template.create_team_modal.events({
     var purpose=event.target.team_purpose.value;
     var objectives=event.target.team_objectives.value;
     var members=[];
+    var member_usrs=[]
     members.push(Meteor.userId());
+    member_usrs.push(Meteor.user())
     Teams.insert({
       name:name,
       description:purpose,
       objectives:objectives,
-      members:members});
+      members:members,
+      member_usrs:member_usrs
+    });
   }
 });
 Template.join_team_modal.events({
@@ -149,14 +155,20 @@ Template.join_team_modal.events({
     event.preventDefault();
     var team_id=event.target.team_id.value;
     var members;
-    Teams.find({_id:team_id}).forEach(function(document){members=document.members});
+    var member_usrs;
+    Teams.find({_id:team_id}).forEach(function(document){
+      members=document.members;
+      member_usrs=document.member_usrs;
+    });
     function alreadyMember(userId){
       return userId==Meteor.userId();
     }
     if(!members.find(alreadyMember)){
       members.push(Meteor.userId());
+      member_usrs.push(Meteor.user());
       console.log("member pushed");
-      Teams.update({_id:team_id},{$set:{members:members}});
+      Teams.update({_id:team_id},{$set:
+        {members:members,member_usrs:members_usrs}});
     }
     else{
       Bert.alert({
@@ -175,13 +187,16 @@ Template.teams.events({
     if(Session.get('tamperMode')){
       var team_id=this._id;
       var members;
+      var member_usrs;
       Teams.find({_id:team_id}).forEach(
         function(document){
           members=document.members;
+          member_usrs=document.member_usrs
         });
       members.pop(Meteor.userId());
+      member_usrs.pop(Meteor.user());
       $("#"+this._id).hide("slow",function(){
-          Teams.update({_id:team_id},{$set:{members:members}});
+        Teams.update({_id:team_id},{$set:{members:members,member_usrs:member_usrs}});
       });
      
     }
@@ -193,14 +208,37 @@ Template.teams.events({
         style:'growl-top-right'
       });
     }
-  }
-});
+  },
+  'click .js-assign-task':function(event){
+    //var teamId=this._id;
+    //console.log(teamId);
+    var checked=$(".check:checkbox:checked");
+    var taskId=$("#assign_task").val();
+    var assignedTo=[];
+    var assignedTo_usrs=[];
+    console.log(taskId);
+    for(var i=0;i<checked.length;i++){
+      var doc=checked[i];
+      var user=doc.getAttribute("data-user");
+      var username=doc.getAttribute("data-username");
+      console.log(user);
+      console.log(username);
+      assignedTo.push(user);
+      assignedTo_usrs.push(username)
+    }
+      Tasks.update({_id:taskId},{$set:{assignedTo:assignedTo,
+        assignedTo_usrs:assignedTo_usrs,
+        assigned:1}});
+    }
+})
 Template.create_task.events({
   'submit form':function(event){
     event.preventDefault();
     var title=event.target.task_title.value;
     var description=event.target.task_description.value;
-    Tasks.insert({title:title,description:description,assigned:0,completed:0,assignedTo:[],assingedBy:Meteor.userId()});
+    Tasks.insert({title:title,description:description,assigned:0,
+      completed:0,assignedTo:[],assignedTo_usrs:[],
+      assignedBy:Meteor.userId()});
   }
 });
 Template.tasks.events({

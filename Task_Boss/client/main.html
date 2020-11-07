@@ -142,6 +142,15 @@
       <button class="btn btn-dark btn-lg js-join-team" data-toggle="modal"
         data-target="#join_team">
         Join team</button>
+      <span style="float:right">
+          <input type="text" id="assign_task" 
+                  placeholder="enter task id">
+                  <button class="btn btn-dark btn-sm js-assign-task">
+                    assign
+                  </button>
+
+      </span>
+
     </div>
     {{>create_team_modal}}
     {{>join_team_modal}}
@@ -168,14 +177,20 @@
                   <h5>Objectives: </h5>
                   <textarea id="" name="" cols="30" rows="10" value="{{objectives}}"></textarea> 
                 </div>
-                <div class="right" style="margin-left:40px;display:inline-block;float:left">
+                <div class="right" style="margin-left:40px;display:inline-block;
+                  float:left">
                   <ul>
                     <h4>Members:</h4>
-                    {{#each members}}
-                    <li>{{this}}</li>
+                    {{#each member_usrs}}
+                    <input type="checkbox" 
+                           class="check" data-user="{{this._id}}"
+                                         data-username={{this.username}}>
+                    <span>{{this.username}}</span>
                     {{/each}}
                   </ul>
                 </div>
+                <div class="assign_task" style="margin-left:20px;display:inline-block;float:left">
+                                  </div>
               </div>
             </div>
           </li>
@@ -304,7 +319,24 @@
         <ul class="list-group">
           {{#each tasks}}
           {{#if assigned}}
-          <li class="list-group-item">{{title}}</li>
+          <li class="list-group-item">
+           <span class="glyphicon glyphicon-list js-show-assigned-task-details"
+                data-toggle="collapse" 
+                data-target="#assigned_task_details_{{_id}}">
+          </span>
+            {{title}}
+            <span class="glyphicon glyphicon-remove js-del-task"
+              style="float:right;color:red">
+            </span>
+          <div id="assigned_task_details_{{_id}}" class="collapse">
+            <ul>
+              <h4>Assigned to:</h4>
+              {{#each assignedTo_usrs}}
+              <li>{{this}}</li>
+              {{/each}}
+            </ul>
+          </div>
+          </li>
           {{/if}}
           {{/each}}
         </ul>
