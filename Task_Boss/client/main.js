@@ -39,7 +39,8 @@ Template.tasks.helpers({
   tasks:Tasks.find({assignedBy:Meteor.userId()})
 });
 Template.home.helpers({
-  tasks:Tasks.find({assignedTo:Meteor.userId()})
+  tasks:Tasks.find({assignedTo:Meteor.userId()}),
+  completed_tasks:Tasks.find({completedBy:Meteor.userId()})
 });
 //register.events
 Template.register.events({
@@ -171,7 +172,7 @@ Template.join_team_modal.events({
       member_usrs.push(Meteor.user());
       console.log("member pushed");
       Teams.update({_id:team_id},{$set:
-        {members:members,member_usrs:members_usrs}});
+        {members:members,member_usrs:member_usrs}});
     }
     else{
       Bert.alert({
@@ -226,22 +227,31 @@ Template.teams.events({
       var username=doc.getAttribute("data-username");
       console.log(user);
       console.log(username);
-      assignedTo.push(user);
-      assignedTo_usrs.push(username)
+      function alreadyAssigned(userId){
+         return userId==user;
+      }
+      if(assignedTo.find(alreadyAssigned)){
+       // 
+      }
+      else{
+        assignedTo.push(user);
+        assignedTo_usrs.push(username);
+      }
     }
       Tasks.update({_id:taskId},{$set:{assignedTo:assignedTo,
         assignedTo_usrs:assignedTo_usrs,
         assigned:1}});
     }
-})
+});
 Template.create_task.events({
   'submit form':function(event){
     event.preventDefault();
     var title=event.target.task_title.value;
     var description=event.target.task_description.value;
     Tasks.insert({title:title,description:description,assigned:0,
-      completed:0,assignedTo:[],assignedTo_usrs:[],
-      assignedBy:Meteor.userId()});
+      completed:0,assignedTo:[],assignedTo_usrs:[],completedBy:[],
+      completedBy_usrs:[],
+      assignedBy:Meteor.userId(),assignedBy_usr:Meteor.user().username});
   }
 });
 Template.tasks.events({
@@ -258,13 +268,43 @@ Template.tasks.events({
       });
     }
   },
+  'click .js-stage':function(){
+    if(Session.get('tamperMode')){
+      Tasks.update({_id:this._id},{$set:{
+        assignedTo:[],
+        assignedTo_usrs:[],
+        assigned:0,
+        completedBy:[],
+        completedBy_usrs:[]
+      }});      
+    }
+    else{
+      Bert.alert({
+        title:"Cannot move back to stage",
+        message:"turn on tamper mode to be able to move this task to stage",
+        type:"warning",
+        style:"growl-top-right"
+      });
+    }
+  }
 });
 Template.home.events({
-  'click .js-set-complete':function(){
+  'click .js-set-complete':function(event){
     if(Session.get('tamperMode')){
       var taskId=this._id;
+      var completedBy;
+      var completedBy_usrs;
       console.log(taskId);
-      Tasks.update({_id:this._id},{$set:{completed:1}});
+      Tasks.find({_id:taskId}).forEach(function(document){
+        completedBy=document.completedBy;
+        completedBy_usrs=document.completedBy_usrs;
+      });
+      completedBy.push(Meteor.userId());
+      completedBy_usrs.push(Meteor.user().username);
+      console.log(completedBy_usrs);
+      Tasks.update({_id:this._id},{$set:{completed:1,completedBy:completedBy,
+        completedBy_usrs:completedBy_usrs
+      }});
     }
     else{
       Bert.alert({
@@ -273,6 +313,45 @@ Template.home.events({
         type:"warning",
         style:"growl-top-right"
       });
+    }
+  },
+  'click .js-set-incomplete':function(){
+    if(Session.get('tamperMode')){
+      var taskId=this._id;
+      var completedBy;
+      var completedBy_usrs;
+      console.log(taskId);
+      Tasks.find({_id:taskId}).forEach(function(document){
+          completedBy=document.completedBy;
+          completedBy_usrs=document.completedBy_usrs;
+      });
+      completedBy.pop(Meteor.userId());
+      completedBy_usrs.pop(Meteor.user().username);
+      Tasks.update({_id:this._id},{$set:{completed:0,
+        completedBy:completedBy,
+        completedBy_usrs:completedBy_usrs
+      }});
+    }
+    else{
+      Bert.alert({
+        title:"cannot set incomplete",
+        message:"turn tamper mode on to be able to set this task as incomplete",
+        type:"warning",
+        style:"growl-top-right"
+      });
+    }
+  },
+  'click #seeCompleted':function(){
+    if(document.getElementById("seeCompleted").checked==true){
+       console.log("Show completed");
+       $("#all_tasks").css("display","none");
+       $("#complete_tasks").css("display","block");
+    }
+    else{
+      console.log("Show all");
+      $("#complete_tasks").css("display","none");
+      $("#all_tasks").css("display","block");
+
     }
   }
 });

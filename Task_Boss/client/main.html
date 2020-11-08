@@ -56,51 +56,46 @@
   {{>logged_in_navbar}}
   <div class="row">
     <div class="container">
-      <h2>Tasks assigned to you:</h2>
-      <div class="col-md-5 incomplete_tasks">
-        <h4>Incomplete:</h4>
+      <h2>Your tasks: </h2>
+      <input id="seeCompleted" type="checkbox">
+      <span style="margin-left:10px;">See completed</span>
+      <div id="all_tasks" style="display:block">
         <ul class="list-group">
           {{#each tasks}}
-          {{#if completed}}
-          {{else}}
-          <li class="list-group-item">
+          <li id="{{_id}}" class="list-group-item">
             <span class="glyphicon glyphicon-list"
-                  data-toggle="collapse" data-target="#incomplete_details_{{_id}}"
-                  style="margin:right:10px;">
+                  data-toggle="collapse" data-target="#task_details_{{_id}}"
+                  style="float:left;margin-right:10px;">
             </span>
             {{title}}
             <span class="glyphicon glyphicon-ok js-set-complete"
-              style="color:green; float:right;">
-            </span>
-            <div id="incomplete_details_{{_id}}" class="collapse">
-              <textarea id="" name="" cols="30" rows="10">
-                {{description}}
-              </textarea>
-            </div>
-          </li>
-          {{/if}}
-          {{/each}}
+              style="float:right;color:green;">
+          </span>
+          <div id="task_details_{{_id}}" class="collapse">
+            <h4>Assigned by: {{assignedBy_usr}}</h4>
+            <textarea id="" name="" cols="30" rows="10">{{description}}</textarea>
+          </div>
+        </li>
+        {{/each}}
         </ul>
       </div>
-      <div class="col-md-5 col-md-offset-2 complete_tasks">
-        <h4>Complete:</h4>
+      <div id="complete_tasks" style="display:none">
         <ul class="list-group">
-          {{#each tasks}}
-          {{#if completed}}
+          {{#each completed_tasks}}
           <li class="list-group-item">
             <span class="glyphicon glyphicon-list"
-                  data-toggle="collapse" data-target="#complete_details_{{_id}}"
-                  style="margin:right:10px;">
+                  style="float:left;margin-right:10px;"
+                  data-toggle="collapse" data-target="#com_task_details_{{_id}}">
             </span>
-              {{title}}
-            <div id="complete_details_{{_id}}" class="collapse">
-              <textarea id="" name="" cols="30" rows="10">
-                {{description}}
-              </textarea>
-            </div>
-
+            {{title}}
+          <span class="glyphicon glyphicon-arrow-left js-set-incomplete"
+            style="float:right">
+          </span>
+          <div id="com_task_details_{{_id}}" class="collapse">
+            <h4>Assigned by: {{assignedBy_usr}}</h4>
+            <textarea id="" name="" cols="30" rows="10">{{description}}</textarea>
+          </div>
           </li>
-          {{/if}}
           {{/each}}
         </ul>
       </div>
@@ -236,7 +231,7 @@
                     <input type="checkbox" 
                            class="check" data-user="{{this._id}}"
                                          data-username={{this.username}}>
-                    <span>{{this.username}}</span>
+                    <span>{{this.username}}</span><br>
                     {{/each}}
                   </ul>
                 </div>
@@ -355,7 +350,8 @@
                  data-toggle="collapse" data-target="#staged_task_details_{{_id}}">
            </span>
             {{title}}
-            <span class="glyphicon glyphicon-remove js-del-task" style="float:right;margin-right:10px;color:red;"></span>
+            <span class="glyphicon glyphicon-remove js-del-task" style="float:right;margin-right:10px;color:red;">
+            </span>
             <span style="float:right;margin-right:10px;">{{_id}}</span>
             <div id="staged_task_details_{{_id}}" class="collapse">
               <textarea>{{description}}</textarea>
@@ -370,7 +366,7 @@
         <ul class="list-group">
           {{#each tasks}}
           {{#if assigned}}
-          <li class="list-group-item">
+          <li id={{_id}} class="list-group-item">
            <span class="glyphicon glyphicon-list js-show-assigned-task-details"
                 data-toggle="collapse" 
                 data-target="#assigned_task_details_{{_id}}">
@@ -379,10 +375,20 @@
             <span class="glyphicon glyphicon-remove js-del-task"
               style="float:right;color:red">
             </span>
+            <span class="glyphicon glyphicon-arrow-left js-stage"
+              style="float:right;margin-right:10px;">
+            </span>
+            <span style="float:right;margin-right:10px;">{{_id}}</span>
           <div id="assigned_task_details_{{_id}}" class="collapse">
             <ul>
               <h4>Assigned to:</h4>
               {{#each assignedTo_usrs}}
+              <li>{{this}}</li>
+              {{/each}}
+            </ul>
+            <ul>
+              <h4>Completed by:</h4>
+              {{#each completedBy_usrs}}
               <li>{{this}}</li>
               {{/each}}
             </ul>
