@@ -112,15 +112,8 @@ Template.login.events({
     });
   },
 });
-
-//logged_in_navbar.events
-Template.logged_in_navbar.events({
-  'click #js_logout':function(){
-    //Router.go('/');
-    //location.reload();
-    Meteor.logout();
-  },
-  'click .js-change-mode':function(event){
+Template.layout.events({
+'click .js-change-mode':function(event){
     if(event.target.innerHTML=='tamper mode is off'){
       event.target.innerHTML='tamper mode is on';
       event.target.classList.remove('btn-success');
@@ -133,8 +126,17 @@ Template.logged_in_navbar.events({
     }
     Session.set('tamperMode',!Session.get('tamperMode'));
     console.log(Session.get('tamperMode'));
-  }
+  },
+
 });
+//logged_in_navbar.events
+Template.logged_in_navbar.events({
+  'click #js_logout':function(){
+    //Router.go('/');
+    //location.reload();
+    Meteor.logout();
+  },
+    });
 Template.create_team_modal.events({
   'submit form':function(event){
     //event.preventDefault();

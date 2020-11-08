@@ -3,6 +3,11 @@
 
 <!--template layout -->
 <template name="layout">
+  {{#if currentUser}}
+  {{>logged_in_navbar}}
+  {{else}}
+  {{>logged_out_navbar}}
+  {{/if}}
   {{> yield}}
 </template>
 
@@ -53,7 +58,6 @@
 <!--template home page -->
 <template name="home">
   {{#if currentUser}}
-  {{>logged_in_navbar}}
   <div class="row">
     <div class="container">
       <h2>Your tasks: </h2>
@@ -102,7 +106,6 @@
     </div>
   </div>
   {{else}}
-  {{>logged_out_navbar}}
   {{>loginRegister}}
   {{/if}}
 </template>
@@ -115,7 +118,6 @@
 </template>
 <!--template register-->
 <template name="register">
-  {{>logged_out_navbar}}
   <div class="container col-md-4 col-md-offset-4" >
     <div class="container title">
       <h2>Register:</h2>
@@ -157,7 +159,6 @@
 </template>
 <!-- template login-->
 <template name="login">
-  {{>logged_out_navbar}}
   <div class="container col-md-4 col-md-offset-4">
     <div class="container title"><h2>Login:</h2></div>
   <form>
@@ -179,7 +180,6 @@
 </template>
 <!--template teams-->
 <template name="teams">
-  {{>logged_in_navbar}}
   <div class="container">
     <div class="row">
       <button class="btn btn-dark btn-lg js-create-team" data-toggle="modal" 
@@ -316,7 +316,6 @@
 </div>
 </template>
 <template name="profile">
-  {{>logged_in_navbar}}
   {{# with currentUser}}
   {{#with profile}}
   <h2>First Name: {{first_name}}</h2>
@@ -326,7 +325,6 @@
 </template>
 
 <template name="tasks">
-  {{>logged_in_navbar}}
     <div class="row">
     <div class="container">
       <button class="btn btn-dark btn-lg"
@@ -366,7 +364,7 @@
         <ul class="list-group">
           {{#each tasks}}
           {{#if assigned}}
-          <li id={{_id}} class="list-group-item">
+          <li id="{{_id}}" class="list-group-item">
            <span class="glyphicon glyphicon-list js-show-assigned-task-details"
                 data-toggle="collapse" 
                 data-target="#assigned_task_details_{{_id}}">
