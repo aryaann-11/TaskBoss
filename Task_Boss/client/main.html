@@ -54,7 +54,58 @@
 <template name="home">
   {{#if currentUser}}
   {{>logged_in_navbar}}
-  <h1>You are logged in</h1>
+  <div class="row">
+    <div class="container">
+      <h2>Tasks assigned to you:</h2>
+      <div class="col-md-5 incomplete_tasks">
+        <h4>Incomplete:</h4>
+        <ul class="list-group">
+          {{#each tasks}}
+          {{#if completed}}
+          {{else}}
+          <li class="list-group-item">
+            <span class="glyphicon glyphicon-list"
+                  data-toggle="collapse" data-target="#incomplete_details_{{_id}}"
+                  style="margin:right:10px;">
+            </span>
+            {{title}}
+            <span class="glyphicon glyphicon-ok js-set-complete"
+              style="color:green; float:right;">
+            </span>
+            <div id="incomplete_details_{{_id}}" class="collapse">
+              <textarea id="" name="" cols="30" rows="10">
+                {{description}}
+              </textarea>
+            </div>
+          </li>
+          {{/if}}
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-5 col-md-offset-2 complete_tasks">
+        <h4>Complete:</h4>
+        <ul class="list-group">
+          {{#each tasks}}
+          {{#if completed}}
+          <li class="list-group-item">
+            <span class="glyphicon glyphicon-list"
+                  data-toggle="collapse" data-target="#complete_details_{{_id}}"
+                  style="margin:right:10px;">
+            </span>
+              {{title}}
+            <div id="complete_details_{{_id}}" class="collapse">
+              <textarea id="" name="" cols="30" rows="10">
+                {{description}}
+              </textarea>
+            </div>
+
+          </li>
+          {{/if}}
+          {{/each}}
+        </ul>
+      </div>
+    </div>
+  </div>
   {{else}}
   {{>logged_out_navbar}}
   {{>loginRegister}}

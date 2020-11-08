@@ -36,7 +36,10 @@ Template.teams.helpers({
   teams:Teams.find({members:Meteor.userId()}),
   });
 Template.tasks.helpers({
-  tasks:Tasks.find({})
+  tasks:Tasks.find({assignedBy:Meteor.userId()})
+});
+Template.home.helpers({
+  tasks:Tasks.find({assignedTo:Meteor.userId()})
 });
 //register.events
 Template.register.events({
@@ -255,4 +258,21 @@ Template.tasks.events({
       });
     }
   },
+});
+Template.home.events({
+  'click .js-set-complete':function(){
+    if(Session.get('tamperMode')){
+      var taskId=this._id;
+      console.log(taskId);
+      Tasks.update({_id:this._id},{$set:{completed:1}});
+    }
+    else{
+      Bert.alert({
+        title:"cannot set complete",
+        message:"turn tamper mode on to be able to set this task as complete",
+        type:"warning",
+        style:"growl-top-right"
+      });
+    }
+  }
 });
