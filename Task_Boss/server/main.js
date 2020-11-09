@@ -5,7 +5,7 @@ Meteor.startup(() => {
   // code to run on server at startup
 });
 Meteor.publish('teams',function(){
-  return Teams.find({members:this.userId});
+  return Teams.find({});
 });
 Meteor.publish('tasksByYou',function(){
   return Tasks.find({assignedBy:this.userId});

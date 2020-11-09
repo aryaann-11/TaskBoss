@@ -33,7 +33,7 @@ Router.route('/teams',{
     } 
   },
   subscriptions:function(){
-    return Meteor.subscribe('teams');
+    return [Meteor.subscribe('teams'),Meteor.subscribe('tasksByYou')]
   }
 });
 Router.route('/tasks',{
@@ -185,8 +185,8 @@ Template.join_team_modal.events({
   'submit form':function(event){
     event.preventDefault();
     var team_id=event.target.team_id.value;
-    var members;
-    var member_usrs;
+    var members=[];
+    var member_usrs=[];
     Teams.find({_id:team_id}).forEach(function(document){
       members=document.members;
       member_usrs=document.member_usrs;
@@ -194,7 +194,8 @@ Template.join_team_modal.events({
     function alreadyMember(userId){
       return userId==Meteor.userId();
     }
-    if(!members.find(alreadyMember)){
+    console.log(members);
+    if(!(members.find(alreadyMember))){
       members.push(Meteor.userId());
       member_usrs.push(Meteor.user());
       Meteor.call('updateTeam',team_id,members,member_usrs,function(error){
@@ -262,13 +263,15 @@ Template.teams.events({
     var taskId=$("#assign_task").val();
     var assignedTo=[];
     var assignedTo_usrs=[];
-    console.log(taskId);
+    Tasks.find({_id:taskId}).forEach(function(document){
+        assignedTo=document.assignedTo;
+        assignedTo_usrs=document.assignedTo_usrs;
+      });
+    console.log(assignedTo_usrs);
     for(var i=0;i<checked.length;i++){
       var doc=checked[i];
       var user=doc.getAttribute("data-user");
       var username=doc.getAttribute("data-username");
-      console.log(user);
-      console.log(username);
       function alreadyAssigned(userId){
          return userId==user;
       }
@@ -280,6 +283,7 @@ Template.teams.events({
         assignedTo_usrs.push(username);
       }
     }
+    console.log(assignedTo_usrs);
     Meteor.call('updateTask',taskId,assignedTo,assignedTo_usrs,function(error){
       if(error){
         Bert.alert({
@@ -289,7 +293,7 @@ Template.teams.events({
           style:"growl-top-right"
         });
       }
-    });
+            });
   }
 });
 Template.create_task.events({
@@ -360,7 +364,7 @@ Template.tasks.events({
       Bert.alert({
         title:"Cannot move back to stage",
         message:"turn on tamper mode to be able to move this task to stage",
-        type:"warning",
+        type:"danger",
         style:"growl-top-right"
       });
     }
@@ -377,8 +381,27 @@ Template.home.events({
         completedBy=document.completedBy;
         completedBy_usrs=document.completedBy_usrs;
       });
-      completedBy.push(Meteor.userId());
-      completedBy_usrs.push(Meteor.user().username);
+      function alreadyPresent(userId){
+        return userId==Meteor.userId();
+      }
+      if(!completedBy.find(alreadyPresent)){
+          completedBy.push(Meteor.userId());
+          completedBy_usrs.push(Meteor.user().username);
+        Bert.alert({
+          title:"success",
+          message:"task has been set as complete",
+          type:"success",
+          style:"growl-top-right"
+        });
+      }
+      else{
+        Bert.alert({
+          title:"error",
+          message:"you have already set this task as complete",
+          type:"danger",
+          style:"growl-top-right"
+        });
+      }
       console.log(completedBy_usrs);
       Meteor.call('setTask',taskId,completedBy,completedBy_usrs,function(error){
         if(error){
@@ -395,7 +418,7 @@ Template.home.events({
       Bert.alert({
         title:"cannot set complete",
         message:"turn tamper mode on to be able to set this task as complete",
-        type:"warning",
+        type:"danger",
         style:"growl-top-right"
       });
     }
@@ -413,19 +436,20 @@ Template.home.events({
       completedBy.pop(Meteor.userId());
       completedBy_usrs.pop(Meteor.user().username);
       Meteor.call('setTask',taskId,completedBy,completedBy_usrs,function(error){
+        if(error){
         Bert.alert({
           title:error,
           message:error.reason,
           type:"danger",
           style:"growl-top-right"
         });
-      });
+      }});
     }
     else{
       Bert.alert({
         title:"cannot set incomplete",
         message:"turn tamper mode on to be able to set this task as incomplete",
-        type:"warning",
+        type:"danger",
         style:"growl-top-right"
       });
     }
