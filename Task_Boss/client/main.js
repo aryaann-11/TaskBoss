@@ -9,39 +9,60 @@ import './main.html';
 Router.configure({
   layoutTemplate:'layout'
 });
-Router.route('/',function(){
-  this.render('home');
+Router.route('/',{
+  template:'home',
+  data:function(){
+    return {
+      tasks:Tasks.find({assignedTo:Meteor.userId()}),
+      completed_tasks:Tasks.find({completedBy:Meteor.userId()})
+    }
+  },
+    subscriptions:function(){
+    return Meteor.subscribe('tasksToYou');
+  }
 });
-Router.route('/login',function(){
-  this.render('login');
+Router.route('/login',{
+  template:'login',
 });
-Router.route('/register',function(){
-  this.render('register');
+Router.route('/register',{template:'register'});
+Router.route('/teams',{
+  template:'teams',
+  data:function(){
+    return {
+      teams:Teams.find({members:Meteor.userId()})
+    } 
+  },
+  subscriptions:function(){
+    return Meteor.subscribe('teams');
+  }
 });
-Router.route('/teams',function(){
-  this.render('teams');
+Router.route('/tasks',{
+  template:'tasks',
+  data:function(){
+    return {
+      tasks: Tasks.find({assignedBy:Meteor.userId()})
+    }
+  },
+    subscriptions:function(){
+    return Meteor.subscribe('tasksByYou');
+  }
 });
-Router.route('/profile',function(){
-  this.render('profile');
-});
-Router.route('/tasks',function(){
-  this.render('tasks');
-});
+
 //subscriptions
 //helpers
 //console.log(Teams.find().count());
 Session.setDefault('tamperMode',false);
 console.log(Session.get('tamperMode'));
-Template.teams.helpers({
-  teams:Teams.find({members:Meteor.userId()}),
-  });
-Template.tasks.helpers({
-  tasks:Tasks.find({assignedBy:Meteor.userId()})
-});
-Template.home.helpers({
-  tasks:Tasks.find({assignedTo:Meteor.userId()}),
-  completed_tasks:Tasks.find({completedBy:Meteor.userId()})
-});
+//Template.teams.helpers({
+  //teams:Teams.find({members:Meteor.userId()}),
+  //});
+//Template.tasks.helpers({
+  //tasks:Tasks.find({assignedBy:Meteor.userId()})
+//});
+//Template.home.helpers({
+  //tasks:Tasks.find({assignedTo:Meteor.userId()}),
+  //completed_tasks:Tasks.find({completedBy:Meteor.userId()})
+//});
 //register.events
 Template.register.events({
   'submit form':function(event){
