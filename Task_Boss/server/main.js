@@ -5,7 +5,7 @@ Meteor.startup(() => {
   // code to run on server at startup
 });
 Meteor.publish('teams',function(){
-  return Teams.find({});
+  return Teams.find({members:this.userId});
 });
 Meteor.publish('tasksByYou',function(){
   return Tasks.find({assignedBy:this.userId});
@@ -47,7 +47,7 @@ Meteor.methods({
       assigned:1
     }});
   },
-  'createTask':function(title,description){
+  'createTask':function(title,description,priority,deadline,username){
     if(!this.userId){
       throw new Meteor.Error("not logged in");
     }
@@ -58,9 +58,11 @@ Meteor.methods({
       completedBy:[],
       completedBy_usrs:[],
       assignedBy:this.userId,
-      assignedBy_usr:this.username,
+      assignedBy_usr:username,
       assignedTo:[],
-      assignedTo_usrs:[]
+      assignedTo_usrs:[],
+      priority:priority,
+      deadline:deadline
     });
   },
   'delTask':function(taskId){

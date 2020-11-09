@@ -13,8 +13,8 @@ Router.route('/',{
   template:'home',
   data:function(){
     return {
-      tasks:Tasks.find({assignedTo:Meteor.userId()}),
-      completed_tasks:Tasks.find({completedBy:Meteor.userId()})
+      tasks:Tasks.find({assignedTo:Meteor.userId()},{sort:{priority:1,date:1}}),
+      completed_tasks:Tasks.find({completedBy:Meteor.userId()},{sort:{priority:1,date:1}})
     }
   },
     subscriptions:function(){
@@ -40,7 +40,7 @@ Router.route('/tasks',{
   template:'tasks',
   data:function(){
     return {
-      tasks: Tasks.find({assignedBy:Meteor.userId()})
+      tasks: Tasks.find({assignedBy:Meteor.userId()},{sort:{priority:1,date:1}})
     }
   },
     subscriptions:function(){
@@ -297,7 +297,18 @@ Template.create_task.events({
     event.preventDefault();
     var title=event.target.task_title.value;
     var description=event.target.task_description.value;
-    Meteor.call('createTask',title,description,function(error){
+    var radios=document.getElementsByName("priority");
+    var priority;
+    var deadline=event.target.deadline.value;
+    console.log(deadline);
+    for(var i=0;i<radios.length;i++){
+      if(radios[i].checked){
+        priority=radios[i].value;
+        break;
+      }
+    }
+    Meteor.call('createTask',title,description,priority,deadline,
+      Meteor.user().username,function(error){
       if(error){
         Bert.alert({
           title:error,

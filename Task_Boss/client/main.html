@@ -22,7 +22,6 @@
         <li><a href="/">Home</a></li>
         <li><a href="/teams">Teams</a></li>
         <li><a href="/tasks">Tasks</a></li>
-        <li><a href="/profile">My Profile</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li class="js-change-mode">
@@ -77,6 +76,8 @@
           </span>
           <div id="task_details_{{_id}}" class="collapse">
             <h4>Assigned by: {{assignedBy_usr}}</h4>
+            <h5>Deadline: {{deadline}}</h5>
+            <h5>Priority: {{priority}}</h5>
             <textarea id="" name="" cols="30" rows="10">{{description}}</textarea>
           </div>
         </li>
@@ -97,6 +98,8 @@
           </span>
           <div id="com_task_details_{{_id}}" class="collapse">
             <h4>Assigned by: {{assignedBy_usr}}</h4>
+            <h5>Deadline: {{deadline}}</h5>
+            <h5>Priority: {{priority}}</h5>
             <textarea id="" name="" cols="30" rows="10">{{description}}</textarea>
           </div>
           </li>
@@ -315,14 +318,6 @@
   </div>
 </div>
 </template>
-<template name="profile">
-  {{# with currentUser}}
-  {{#with profile}}
-  <h2>First Name: {{first_name}}</h2>
-  <h2>Second Name: {{last_name}}</h2>
-  {{/with}}
-  {{/with}}
-</template>
 
 <template name="tasks">
     <div class="row">
@@ -352,6 +347,8 @@
             </span>
             <span style="float:right;margin-right:10px;">{{_id}}</span>
             <div id="staged_task_details_{{_id}}" class="collapse">
+              <h5>Deadline: {{deadline}}</h5>
+              <h5>Priority: {{priority}}</h5>
               <textarea>{{description}}</textarea>
             </div>
           </li>
@@ -378,6 +375,8 @@
             </span>
             <span style="float:right;margin-right:10px;">{{_id}}</span>
           <div id="assigned_task_details_{{_id}}" class="collapse">
+            <h5>Deadline: {{deadline}}</h5>
+            <h5>Priority: {{priority}}</h5>
             <ul>
               <h4>Assigned to:</h4>
               {{#each assignedTo_usrs}}
@@ -418,6 +417,19 @@
           <div class="form-group">
             <label for="task_description">Description: </label>
             <textarea class="form-control" type="text" name="task_description" id="task_description"></textarea>
+          </div>
+          <div class="form-group">
+            <h5>Priority:</h5>
+            <input type="radio" name="priority" value="high" id="high">
+            <label for="high">High</label>
+            <input type="radio" name="priority" value="medium" id="medium">
+            <label for="medium">Medium</label>
+            <input type="radio" name="priority" value="trivial" id="trivial">
+            <label for="low">Trivial</label>
+          </div>
+          <div class="form-group">
+            <input type="date" name="deadline" id="deadline">
+            <label for="deadline">Deadline</label>
           </div>
           <button type="submit" class="btn btn-default">Submit</button>
         </form>
