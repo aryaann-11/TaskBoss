@@ -168,13 +168,17 @@ Template.create_team_modal.events({
     var member_usrs=[]
     members.push(Meteor.userId());
     member_usrs.push(Meteor.user())
-    Teams.insert({
-      name:name,
-      description:purpose,
-      objectives:objectives,
-      members:members,
-      member_usrs:member_usrs
-    });
+    Meteor.call('insertTeam',name,purpose,objectives,members,member_usrs
+      ,function(error){
+        if(error){
+          Bert.alert({
+            title:error,
+            message:error.reason,
+            type:"danger",
+            style:"growl-top-right"
+          });
+        }
+      });
   }
 });
 Template.join_team_modal.events({
@@ -193,9 +197,16 @@ Template.join_team_modal.events({
     if(!members.find(alreadyMember)){
       members.push(Meteor.userId());
       member_usrs.push(Meteor.user());
-      console.log("member pushed");
-      Teams.update({_id:team_id},{$set:
-        {members:members,member_usrs:member_usrs}});
+      Meteor.call('updateTeam',team_id,members,member_usrs,function(error){
+        if(error){
+          Bert.alert({
+            title:error,
+            message:error.reason,
+            type:"danger",
+            style:"growl-top-right"
+          });
+        }
+      });
     }
     else{
       Bert.alert({
@@ -223,7 +234,15 @@ Template.teams.events({
       members.pop(Meteor.userId());
       member_usrs.pop(Meteor.user());
       $("#"+this._id).hide("slow",function(){
-        Teams.update({_id:team_id},{$set:{members:members,member_usrs:member_usrs}});
+        Meteor.call('updateTeam',team_id,members,member_usrs,function(error){
+          if(error){
+          Bert.alert({
+            title:error,
+            message:error.reason,
+            type:"danger",
+            style:"growl-top-right"
+          });
+        }});
       });
      
     }
@@ -261,26 +280,48 @@ Template.teams.events({
         assignedTo_usrs.push(username);
       }
     }
-      Tasks.update({_id:taskId},{$set:{assignedTo:assignedTo,
-        assignedTo_usrs:assignedTo_usrs,
-        assigned:1}});
-    }
+    Meteor.call('updateTask',taskId,assignedTo,assignedTo_usrs,function(error){
+      if(error){
+        Bert.alert({
+          title:error,
+          message:error.reason,
+          type:"danger",
+          style:"growl-top-right"
+        });
+      }
+    });
+  }
 });
 Template.create_task.events({
   'submit form':function(event){
     event.preventDefault();
     var title=event.target.task_title.value;
     var description=event.target.task_description.value;
-    Tasks.insert({title:title,description:description,assigned:0,
-      completed:0,assignedTo:[],assignedTo_usrs:[],completedBy:[],
-      completedBy_usrs:[],
-      assignedBy:Meteor.userId(),assignedBy_usr:Meteor.user().username});
+    Meteor.call('createTask',title,description,function(error){
+      if(error){
+        Bert.alert({
+          title:error,
+          message:error.reason,
+          type:"danger",
+          style:"growl-top-right"
+        });
+      }
+    });
   }
 });
 Template.tasks.events({
   'click .js-del-task':function(){
     if(Session.get('tamperMode')){
-      Tasks.remove({_id:this._id});
+      Meteor.call('delTask',this._id,function(error){
+        if(error){
+          Bert.alert({
+            title:error,
+            message:error.reason,
+            type:'danger',
+            style:"growl-top-right"
+          });
+        }
+      });
     }
     else{
       Bert.alert({
@@ -293,13 +334,16 @@ Template.tasks.events({
   },
   'click .js-stage':function(){
     if(Session.get('tamperMode')){
-      Tasks.update({_id:this._id},{$set:{
-        assignedTo:[],
-        assignedTo_usrs:[],
-        assigned:0,
-        completedBy:[],
-        completedBy_usrs:[]
-      }});      
+      Meteor.call('stageTask',this._id,function(error){
+        if(error){
+          Bert.alert({
+            title:error,
+            message:error.reason,
+            type:"danger",
+            style:"growl-top-right"
+          });
+        }
+      });     
     }
     else{
       Bert.alert({
@@ -325,10 +369,17 @@ Template.home.events({
       completedBy.push(Meteor.userId());
       completedBy_usrs.push(Meteor.user().username);
       console.log(completedBy_usrs);
-      Tasks.update({_id:this._id},{$set:{completed:1,completedBy:completedBy,
-        completedBy_usrs:completedBy_usrs
-      }});
-    }
+      Meteor.call('setTask',taskId,completedBy,completedBy_usrs,function(error){
+        if(error){
+          Bert.alert({
+            title:error,
+            message:error.reason,
+            type:"danger",
+            style:"grow-top-right"
+          });
+        }
+      });
+      }
     else{
       Bert.alert({
         title:"cannot set complete",
@@ -350,10 +401,14 @@ Template.home.events({
       });
       completedBy.pop(Meteor.userId());
       completedBy_usrs.pop(Meteor.user().username);
-      Tasks.update({_id:this._id},{$set:{completed:0,
-        completedBy:completedBy,
-        completedBy_usrs:completedBy_usrs
-      }});
+      Meteor.call('setTask',taskId,completedBy,completedBy_usrs,function(error){
+        Bert.alert({
+          title:error,
+          message:error.reason,
+          type:"danger",
+          style:"growl-top-right"
+        });
+      });
     }
     else{
       Bert.alert({
