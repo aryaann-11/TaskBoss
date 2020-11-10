@@ -23,7 +23,8 @@ Meteor.methods({
       description:description,
       objectives:objectives,
       members:members,
-      member_usrs:member_usrs
+      member_usrs:member_usrs,
+      createdBy:this.userId
     });
   },
   'updateTeam':function(teamId,members,member_usrs){
@@ -35,6 +36,12 @@ Meteor.methods({
       members:members,
       member_usrs:member_usrs
     }});
+  },
+  'delTeam':function(teamId){
+    if(!this.userId){
+      throw new Meteor.Error("not logged in","user is not logged in");
+    }
+    Teams.remove({_id:teamId});
   },
   'updateTask':function(taskId,assignedTo,assignedTo_usrs){
       if(!this.userId){

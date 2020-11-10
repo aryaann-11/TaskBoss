@@ -221,38 +221,30 @@ Template.join_team_modal.events({
   }
 });
 Template.teams.events({
-  'click .js-exit-team':function(event){
-    //console.log(this._id);
+  'click .js-del-team':function(event){
+     //console.log(this._id);
     if(Session.get('tamperMode')){
-      var team_id=this._id;
-      var members;
-      var member_usrs;
-      Teams.find({_id:team_id}).forEach(
-        function(document){
-          members=document.members;
-          member_usrs=document.member_usrs
-        });
-      members.pop(Meteor.userId());
-      member_usrs.pop(Meteor.user());
-      $("#"+this._id).hide("slow",function(){
-        Meteor.call('updateTeam',team_id,members,member_usrs,function(error){
-          if(error){
-          Bert.alert({
-            title:error,
-            message:error.reason,
-            type:"danger",
-            style:"growl-top-right"
-          });
-        }});
-      });
-     
+     var id=this._id;
+     var createdBy;
+     Teams.find({_id:id}).forEach(function(document){createdBy=document.createdBy});
+    if(createdBy==Meteor.userId()){
+       Meteor.call('delTeam',id); 
     }
     else{
       Bert.alert({
-        title:'Cant exit team',
-        message:'tamper mode is turned off. Turn tamper mode on to be able to exit team',
-        type:'danger',
-        style:'growl-top-right'
+        title:"can't delete team",
+        message:"you must be the team's creator in order to delete it",
+        type:"danger",
+        style:"growl-top-right"
+      });
+    }
+   }
+    else{
+      Bert.alert({
+        title:"can't delete team",
+        message:"turn tamper mode on to delete this team",
+        type:"danger",
+        style:"growl-top-right"
       });
     }
   },
@@ -433,8 +425,10 @@ Template.home.events({
           completedBy=document.completedBy;
           completedBy_usrs=document.completedBy_usrs;
       });
-      completedBy.pop(Meteor.userId());
-      completedBy_usrs.pop(Meteor.user().username);
+      var i=completedBy.indexOf(Meteor.userId());
+      completedBy.splice(i,1);
+      i=completedBy_usrs.indexOf(Meteor.user().username);
+      completedBy_usrs.splice(i,1);
       Meteor.call('setTask',taskId,completedBy,completedBy_usrs,function(error){
         if(error){
         Bert.alert({
