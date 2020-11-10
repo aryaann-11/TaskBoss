@@ -3,7 +3,6 @@ import { ReactiveVar } from 'meteor/reactive-var';
 import {Teams} from '../lib/collections.js';
 import {Tasks} from '../lib/collections.js';
 import { Session } from 'meteor/session';
-import { Email } from 'meteor/email';
 import './main.html';
 //routes
 Router.configure({
@@ -13,8 +12,8 @@ Router.route('/',{
   template:'home',
   data:function(){
     return {
-      tasks:Tasks.find({assignedTo:Meteor.userId()},{sort:{priority:1,date:1}}),
-      completed_tasks:Tasks.find({completedBy:Meteor.userId()},{sort:{priority:1,date:1}})
+      tasks:Tasks.find({assignedTo:Meteor.userId()},{sort:{priority:1,deadline:1}}),
+      completed_tasks:Tasks.find({completedBy:Meteor.userId()},{sort:{priority:1,deadline:1}})
     }
   },
     subscriptions:function(){
@@ -53,16 +52,6 @@ Router.route('/tasks',{
 //console.log(Teams.find().count());
 Session.setDefault('tamperMode',false);
 console.log(Session.get('tamperMode'));
-//Template.teams.helpers({
-  //teams:Teams.find({members:Meteor.userId()}),
-  //});
-//Template.tasks.helpers({
-  //tasks:Tasks.find({assignedBy:Meteor.userId()})
-//});
-//Template.home.helpers({
-  //tasks:Tasks.find({assignedTo:Meteor.userId()}),
-  //completed_tasks:Tasks.find({completedBy:Meteor.userId()})
-//});
 //register.events
 Template.register.events({
   'submit form':function(event){
@@ -156,6 +145,7 @@ Template.logged_in_navbar.events({
     //Router.go('/');
     //location.reload();
     Meteor.logout();
+    Session.set('tamperMode',false);
   },
     });
 Template.create_team_modal.events({

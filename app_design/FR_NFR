@@ -9,23 +9,16 @@
 
 1. Create and join teams
 
-2. Assign and view tasks based on priority and how long ago it was assigned
+2. Assign and view tasks based on priority and its deadline
 
 3. changing the status of the task
 
 4. deleting the task
 
-5. view team members,leader
+5. view team members,
 
 6. view other team fields 
 
-7. exit team
-
-8. remove member from team
-
-9. updating own profile
-
-10.viewing someone else's profile
 
 ---------------------------------
 |  NON FUNCTIONAL REQUIREMENTS  |
@@ -57,7 +50,3 @@
    TARGET: progress logs for initiation and completion of each function. Error message for each failed task especially 
            those related to authorization problems   
 
-6. NAME:   modularity
-   SCALE:  has my code been structured and divided well
-   METER:  instances of repeated code
-   TARGET: 0 instances   
