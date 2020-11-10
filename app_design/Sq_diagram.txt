@@ -1,0 +1,36 @@
+title Task Boss Sequence Diagram
+
+actor actor
+participant client
+participant server
+participant db
+
+actor->client:crud request
+activate actor
+activate client
+client->server:request
+activate server
+server->server:authorized?
+
+alt if authorized
+server->db:send command to db
+activate db
+db->db:process command
+alt if read request
+db->server:data
+deactivate db
+server->client:data
+client->actor:display data
+else create,update or delete request
+server->client:success message
+client->actor:success message
+end 
+
+===
+else not authorized
+server->client:error message
+deactivate server
+client->actor:display error message
+deactivate client
+deactivate actor
+end
